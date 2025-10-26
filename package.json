@@ -1,0 +1,5 @@
+{
+  "dependencies": {
+    "@avail-project/nexus-core": "^0.0.2"
+  }
+}

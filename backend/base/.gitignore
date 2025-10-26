@@ -1,0 +1,102 @@
+# Dependencies
+node_modules/
+package-lock.json
+
+# Hardhat
+cache/
+artifacts/
+typechain-types/
+
+# Hardhat Ignition default folder for deployments against a local node
+ignition/deployments/chain-31337/
+
+# Deployment artifacts - solc inputs can be regenerated
+deployments/**/solcInputs/
+
+# Foundry
+out/
+forge-cache/
+broadcast/
+lcov.info
+
+# Coverage
+coverage/
+coverage.json
+*.lcov
+
+# TypeScript
+*.tsbuildinfo
+dist/
+build/
+
+# Environment variables
+.env
+.env.local
+.env.*.local
+
+# Logs
+*.log
+logs/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+# OS
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+*~
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.project
+.classpath
+.c9/
+*.launch
+.settings/
+*.sublime-workspace
+*.code-workspace
+
+# Temporary files
+*.tmp
+*.temp
+.cache/
+
+# Testing
+.nyc_output/
+
+# Misc
+*.seed
+*.pid
+*.pid.lock
+
+# Hardhat TypeChain
+typechain/
+
+# Gas reports
+gas-report.txt
+.gas-snapshot
+
+# Flattened contracts
+flattened/
+flat/
+
+# Local blockchain data (if using hardhat node locally)
+node_data/
+
+# Slither
+slither/
+
+# Mythril
+mythril/
+

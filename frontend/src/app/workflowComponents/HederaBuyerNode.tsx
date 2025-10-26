@@ -1,0 +1,354 @@
+"use client";
+
+import { useState } from "react";
+
+interface HederaBuyerNodeProps {
+  node: {
+    id: string;
+    type: string;
+    title: string;
+    icon: string;
+    position: { x: number; y: number };
+    inputs?: { [key: string]: unknown };
+  };
+  isLast: boolean;
+  onMouseDown: (e: React.MouseEvent, nodeId: string) => void;
+  onDelete: (nodeId: string) => void;
+  onUpdateInputs: (nodeId: string, inputs: Record<string, unknown>) => void;
+  onAddNode: () => void;
+}
+
+export default function HederaBuyerNode({
+  node,
+  isLast,
+  onMouseDown,
+  onDelete,
+  onUpdateInputs,
+  onAddNode,
+}: HederaBuyerNodeProps) {
+  const [isExpanded, setIsExpanded] = useState(true);
+
+  const handleInputChange = (field: string, value: unknown) => {
+    onUpdateInputs(node.id, {
+      ...node.inputs,
+      [field]: value,
+    });
+  };
+
+  const inputs = node.inputs || {};
+
+  return (
+    <div
+      className="absolute"
+      style={{
+        left: `${node.position.x}px`,
+        top: `${node.position.y}px`,
+        width: "380px",
+      }}
+      onMouseDown={(e) => onMouseDown(e, node.id)}
+    >
+      {/* Node Card */}
+      <div
+        className="rounded-xl overflow-hidden shadow-2xl transition-all"
+        style={{
+          background:
+            "linear-gradient(135deg, rgba(138, 180, 248, 0.15), rgba(100, 150, 220, 0.15))",
+          border: "2px solid rgba(138, 180, 248, 0.4)",
+          backdropFilter: "blur(20px)",
+        }}
+      >
+        {/* Header */}
+        <div
+          className="px-5 py-4 flex items-center justify-between cursor-move"
+          style={{
+            background:
+              "linear-gradient(135deg, rgba(138, 180, 248, 0.2), rgba(100, 150, 220, 0.25))",
+            borderBottom: "1px solid rgba(150, 180, 220, 0.3)",
+          }}
+        >
+          <div className="flex items-center gap-3">
+            <div
+              className="text-3xl flex items-center justify-center w-12 h-12 rounded-xl"
+              style={{
+                background: "rgba(138, 180, 248, 0.3)",
+                border: "1px solid rgba(150, 180, 220, 0.5)",
+              }}
+            >
+              🛒
+            </div>
+            <div>
+              <h3
+                className="font-bold text-lg"
+                style={{
+                  color: "#e0e8f0",
+                  fontFamily: "'Inter', sans-serif",
+                }}
+              >
+                Hedera Buyer Agent
+              </h3>
+              <p className="text-xs" style={{ color: "#8a9fb5" }}>
+                Initiate purchase negotiation
+              </p>
+            </div>
+          </div>
+
+          <div className="flex items-center gap-2">
+            <button
+              onClick={(e) => {
+                e.stopPropagation();
+                setIsExpanded(!isExpanded);
+              }}
+              className="p-2 rounded-lg transition-all hover:scale-110"
+              style={{
+                background: "rgba(100, 150, 200, 0.3)",
+                border: "1px solid rgba(150, 180, 220, 0.3)",
+                color: "#e0e8f0",
+              }}
+            >
+              <svg
+                className={`w-4 h-4 transition-transform ${
+                  isExpanded ? "rotate-180" : ""
+                }`}
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M19 9l-7 7-7-7"
+                />
+              </svg>
+            </button>
+
+            <button
+              onClick={(e) => {
+                e.stopPropagation();
+                onDelete(node.id);
+              }}
+              className="p-2 rounded-lg transition-all hover:scale-110"
+              style={{
+                background: "rgba(255, 100, 100, 0.3)",
+                border: "1px solid rgba(255, 120, 120, 0.3)",
+                color: "#ffaaaa",
+              }}
+            >
+              <svg
+                className="w-4 h-4"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M6 18L18 6M6 6l12 12"
+                />
+              </svg>
+            </button>
+          </div>
+        </div>
+
+        {/* Configuration Panel */}
+        {isExpanded && (
+          <div className="p-5 space-y-4">
+            {/* Item */}
+            <div>
+              <label
+                className="block text-sm font-semibold mb-2"
+                style={{ color: "#8a9fb5", fontFamily: "'Inter', sans-serif" }}
+              >
+                Item to Purchase
+              </label>
+              <input
+                type="text"
+                value={inputs.item || ""}
+                onChange={(e) => handleInputChange("item", e.target.value)}
+                placeholder="e.g., widgets, gadgets"
+                className="w-full px-4 py-2 rounded-lg text-sm outline-none"
+                style={{
+                  background: "rgba(30, 30, 36, 0.6)",
+                  border: "1px solid rgba(150, 180, 220, 0.3)",
+                  color: "#e0e8f0",
+                }}
+              />
+            </div>
+
+            {/* Quantity */}
+            <div>
+              <label
+                className="block text-sm font-semibold mb-2"
+                style={{ color: "#8a9fb5", fontFamily: "'Inter', sans-serif" }}
+              >
+                Quantity
+              </label>
+              <input
+                type="number"
+                value={inputs.qty || ""}
+                onChange={(e) =>
+                  handleInputChange("qty", parseInt(e.target.value) || 0)
+                }
+                placeholder="10"
+                min="1"
+                className="w-full px-4 py-2 rounded-lg text-sm outline-none"
+                style={{
+                  background: "rgba(30, 30, 36, 0.6)",
+                  border: "1px solid rgba(150, 180, 220, 0.3)",
+                  color: "#e0e8f0",
+                }}
+              />
+            </div>
+
+            {/* Initial Offer Price */}
+            <div>
+              <label
+                className="block text-sm font-semibold mb-2"
+                style={{ color: "#8a9fb5", fontFamily: "'Inter', sans-serif" }}
+              >
+                Initial Offer Price (per unit)
+              </label>
+              <input
+                type="number"
+                value={inputs.unitPrice || ""}
+                onChange={(e) =>
+                  handleInputChange(
+                    "unitPrice",
+                    parseFloat(e.target.value) || 0
+                  )
+                }
+                placeholder="75"
+                min="0"
+                step="0.01"
+                className="w-full px-4 py-2 rounded-lg text-sm outline-none"
+                style={{
+                  background: "rgba(30, 30, 36, 0.6)",
+                  border: "1px solid rgba(150, 180, 220, 0.3)",
+                  color: "#e0e8f0",
+                }}
+              />
+            </div>
+
+            {/* Max Price */}
+            <div>
+              <label
+                className="block text-sm font-semibold mb-2"
+                style={{ color: "#8a9fb5", fontFamily: "'Inter', sans-serif" }}
+              >
+                Maximum Price (won&apos;t exceed)
+              </label>
+              <input
+                type="number"
+                value={inputs.maxPrice || ""}
+                onChange={(e) =>
+                  handleInputChange("maxPrice", parseFloat(e.target.value) || 0)
+                }
+                placeholder="100"
+                min="0"
+                step="0.01"
+                className="w-full px-4 py-2 rounded-lg text-sm outline-none"
+                style={{
+                  background: "rgba(30, 30, 36, 0.6)",
+                  border: "1px solid rgba(150, 180, 220, 0.3)",
+                  color: "#e0e8f0",
+                }}
+              />
+            </div>
+
+            {/* Currency */}
+            <div>
+              <label
+                className="block text-sm font-semibold mb-2"
+                style={{ color: "#8a9fb5", fontFamily: "'Inter', sans-serif" }}
+              >
+                Currency
+              </label>
+              <select
+                value={inputs.currency || "HBAR"}
+                onChange={(e) => handleInputChange("currency", e.target.value)}
+                className="w-full px-4 py-2 rounded-lg text-sm outline-none"
+                style={{
+                  background: "rgba(30, 30, 36, 0.6)",
+                  border: "1px solid rgba(150, 180, 220, 0.3)",
+                  color: "#e0e8f0",
+                }}
+              >
+                <option value="HBAR">HBAR</option>
+                <option value="USDC">USDC</option>
+                <option value="DEMO">DEMO Token</option>
+              </select>
+            </div>
+
+            {/* Status Display */}
+            {inputs.status && (
+              <div
+                className="px-4 py-3 rounded-lg text-sm"
+                style={{
+                  background:
+                    inputs.status === "paid"
+                      ? "rgba(100, 255, 150, 0.2)"
+                      : "rgba(255, 200, 100, 0.2)",
+                  border: `1px solid ${
+                    inputs.status === "paid"
+                      ? "rgba(100, 255, 150, 0.4)"
+                      : "rgba(255, 200, 100, 0.4)"
+                  }`,
+                  color: inputs.status === "paid" ? "#90ff90" : "#ffcc77",
+                }}
+              >
+                <div className="flex items-center gap-2">
+                  <span>{inputs.status === "paid" ? "✅" : "⏳"}</span>
+                  <span className="font-semibold">
+                    {inputs.status === "paid"
+                      ? "Deal Complete"
+                      : "Negotiating..."}
+                  </span>
+                </div>
+                {inputs.transactionId && (
+                  <div className="mt-2 text-xs" style={{ color: "#8a9fb5" }}>
+                    Tx: {inputs.transactionId}
+                  </div>
+                )}
+              </div>
+            )}
+          </div>
+        )}
+
+        {/* Add Next Node Button */}
+        {isLast && (
+          <div className="px-5 pb-5">
+            <button
+              onClick={(e) => {
+                e.stopPropagation();
+                onAddNode();
+              }}
+              className="w-full py-3 rounded-lg font-semibold text-sm transition-all hover:scale-105 flex items-center justify-center gap-2"
+              style={{
+                background:
+                  "linear-gradient(135deg, rgba(100, 150, 200, 0.3), rgba(80, 120, 180, 0.4))",
+                border: "1px solid rgba(150, 180, 220, 0.4)",
+                color: "#e0e8f0",
+              }}
+            >
+              <svg
+                className="w-5 h-5"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M12 4v16m8-8H4"
+                />
+              </svg>
+              Add Next Node
+            </button>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
